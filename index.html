@@ -1,1 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aventura - Fluxograma</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Aventura - Decifre o Mapa Antigo</h1>
+    <div id="game-container">
+      <div id="description"></div>
+      <div id="challenge"></div>
+      <div id="choices"></div>
+    </div>
+  </div>
 
+  <script src="script.js"></script>
+</body>
+</html>
+2. style.css
+body {
+  font-family: Arial, sans-serif;
+  background: #e0f7fa;
+  color: #004d40;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#description {
+  margin-bottom: 15px;
+  font-size: 1.1em;
+}
+
+#challenge {
+  font-style: italic;
+  margin-bottom: 20px;
+  color: #00796b;
+}
+
+#choices button {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  background: #004d40;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.3s ease;
+}
+
+#choices button:hover {
+  background: #00796b;
+}
+const gameData = {
+  passo0: {
+    description: `Você encontra um mapa antigo em uma biblioteca esquecida. O mapa possui símbolos enigmáticos e coordenadas que precisam ser decifradas.`,
+    challenge: `Decifre o código: A palavra que você procura está escondida nas primeiras letras dos pontos cardeais. Qual é a palavra-chave?`,
+    choices: [
+      { text: "NORTE", next: "passo1" },
+      { text: "LESTE", next: "passo0_fail" },
+      { text: "SUL", next: "passo0_fail" },
+      { text: "OESTE", next: "passo0_fail" },
+    ],
+  },
+  passo0_fail: {
+    description: `Palavra incorreta. Tente novamente.`,
+    challenge: ``,
+    choices: [{ text: "Tentar de novo", next: "passo0" }],
+  },
+  passo1: {
+    description: `Você está no Rio de Janeiro.`,
+    challenge: `Após decifrar o mapa, você deve enfrentar o primeiro enigma, um quebra-cabeça de lógica.`,
+    choices: [
+      { text: "Procurar a pista no topo do pico", next: "passo3" },
+      { text: "Desistir e voltar para casa", next: "passo4" },
+    ],
+  },
+  {description: `Você encontra um rio largo e precisa atravessá-lo.`,
+    challenge: `Se você tiver 3 varas de bambu e uma corda, qual a melhor forma de atravessar o rio? (Responda: "balsa")`,
+    choices: [
+      { text: "Construir uma balsa", next: "passo7" },
+      { text: "Tentar nadar", next: "passo4" },
+      { text: "Voltar para casa", next: "passo4" },
+    ],
+  },
+  passo4: {
+    description: `Você desistiu e voltou para casa. Fim da aventura.`,
+    challenge: ``,
+    choices: [{ text: "Recomeçar", next: "passo0" }],
+  },
+  passo7: {
+    description: `Você viaja para o Amazonas e entra em uma floresta densa.`,
+    challenge: `Existe um enigma matemático: Qual é o próximo número da sequência 2, 4, 8, 16, ? (Responda: 32)`,
+    choices: [
+      { text: "32", next: "passo9" },
+      { text: "24", next: "passo7_fail" },
+      { text: "64", next: "passo7_fail" },
+    ],
+  },
+  passo7_fail: {
+    description: `Resposta incorreta. Tente novamente.`,
+    challenge: ``,
+    choices: [{ text: "Tentar de novo", next: "passo7" }],
+  },
+  passo9: {
+    description: `Você segue pela rua à esquerda.`,
+    challenge: `Se o sol estiver à sua direita ao meio-dia, em qual direção você deve seguir?`,
+    choices: [
+      { text: "NORTE", next: "passo11" },
+      { text: "SUL", next: "passo12" },
+      { text: "LESTE", next: "passo12" },
+      { text: "OESTE", next: "passo12" },
+    ],
+  },
+   {description: `Você chegou perto da cidade perdida. Precisa resolver o enigma final.`,
+    challenge: `Combine os números das estrelas, as coordenadas e os símbolos das ruínas para abrir a última porta. Qual é a resposta? (Responda: "TEMPO")`,
+    choices: [
+      { text: "TEMPO", next: "end" },
+      { text: "ORGULHO", next: "passo11_fail" },
+      { text: "ERRO HUMANO", next: "passo11_fail" },
+    ],
+  },
+  passo11_fail: {
+    description: `Resposta incorreta. Tente novamente.`,
+    challenge: ``,
+    choices: [{ text: "Tentar de novo", next: "passo11" }],
+  },
+  passo12: {
+    description: `Você retornou e tentou outro caminho, mas acabou perdido. Tente novamente.`,
+    challenge: ``,
+    choices: [{ text: "Recomeçar", next: "passo0" }],
+  },
+  end: {
+    description: `Parabéns! Você resolveu o mistério da cidade perdida!`,
+    challenge: ``,
+    choices: [{ text: "Jogar novamente", next: "passo0" }],
+  },
+};
+
+const descriptionEl = document.getElementById("description");
+const challengeEl = document.getElementById("challenge");
+const choicesEl = document.getElementById("choices");
+
+function startGame() {
+  showStep("passo0");
+}
+
+function showStep(stepKey) {
+  const step = gameData[stepKey];
+  descriptionEl.textContent = step.description;
+  challengeEl.textContent = step.challenge;
+
+  // Limpa escolhas anteriores
+  choicesEl.innerHTML = "";
+
+  step.choices.forEach((choice) => {
+    const button = document.createElement("button");
+    button.textContent = choice.text;
+    button.onclick = () => showStep(choice.next);
+    choicesEl.appendChild(button);
+  });
+}
